@@ -1,0 +1,94 @@
+Statistical Inference: Peer Assessment 2
+==========================================
+Created by Simon Mackinnon on `r format(Sys.Date(), "%B %d, %Y")`
+[Statistical Inference - Coursera](https://www.coursera.org/course/statinference)
+
+## Assignment 1
+
+### Overview
+In a few (2-3) sentences explain what is going to be reported on.
+
+### Settings
+```{r settings}
+library(datasets)
+library(ggplot2)
+library(gridExtra)
+```
+
+### Data Processing
+
+```{r dataReading, echo=TRUE}
+# copy to global environment
+ToothGrowthDataFrame <- ToothGrowth
+
+#confirm the number dimensions of the copied data
+dim(ToothGrowthDataFrame)
+
+#and display the head rows
+head(ToothGrowthDataFrame)
+```
+
+There are **`r nrow(ToothGrowthDataFrame)` rows** and **`r ncol(ToothGrowthDataFrame)` columns** in the copied data.
+
+
+### Simulations
+
+#### Sample Mean versus Theoretical Mean
+
+```{r Sample Mean versus Theoretical Mean, echo=TRUE, fig.align='center', fig.width=10, fig.height=5}
+lambda <- 0.2
+n = 1000
+
+hist(rexp(n, lambda))
+
+mns = NULL
+for (i in 1 : 1000) mns = c(mns, mean(rexp(40)))
+hist(mns)
+
+```
+
+#### Sample Variance versus Theoretical Variance
+
+```{r Sample Variance versus Theoretical Variance, echo=TRUE, fig.align='center', fig.width=10, fig.height=5}
+lambda <- 0.2
+n = 1000
+
+hist(rexp(n, lambda))
+
+mns = NULL
+for (i in 1 : 1000) mns = c(mns, mean(rexp(40)))
+hist(mns)
+
+```
+
+#### Distribution
+
+```{r Distribution, echo=TRUE, fig.align='center', fig.width=10, fig.height=5}
+
+#plots
+p1 <- qplot(ToothGrowthDataFrame$len, 
+            ToothGrowthDataFrame$supp, 
+            colour=I("blue")) +
+            xlab("Len") + 
+            ylab("Supp") + 
+            ggtitle("Len vs Supp")
+
+p2 <- qplot(ToothGrowthDataFrame$len, 
+            ToothGrowthDataFrame$dose, 
+            colour=I("blue")) +
+            xlab("Len") + 
+            ylab("Dose") + 
+            ggtitle("Len vs Dose")
+
+p3 <- qplot(ToothGrowthDataFrame$supp, 
+            ToothGrowthDataFrame$dose, 
+            colour=I("blue")) +
+            xlab("Supp") + 
+            ylab("Dose") + 
+            ggtitle("Supp vs Dose")
+
+grid.arrange(p1, p2, p3, ncol = 3, main = "ToothGrowth")
+
+```
+
+
