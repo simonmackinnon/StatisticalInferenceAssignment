@@ -8,6 +8,8 @@ Created by Simon Mackinnon on `r format(Sys.Date(), "%B %d, %Y")`
 ### Overview
 In a few (2-3) sentences explain what is going to be reported on.
 
+ The mean of exponential distribution is 1/lambda and the standard deviation is also 1/lambda
+
 ### Settings
 ```{r settings}
 library(datasets)
@@ -15,73 +17,81 @@ library(ggplot2)
 library(gridExtra)
 ```
 
-### Data Processing
-
-```{r dataReading, echo=TRUE}
-# copy to global environment
-ToothGrowthDataFrame <- ToothGrowth
-
-#confirm the number dimensions of the copied data
-dim(ToothGrowthDataFrame)
-
-#and display the head rows
-head(ToothGrowthDataFrame)
-```
-
-There are **`r nrow(ToothGrowthDataFrame)` rows** and **`r ncol(ToothGrowthDataFrame)` columns** in the copied data.
-
-
 ### Simulations
 
 #### Sample Mean versus Theoretical Mean
 
 ```{r Sample Mean versus Theoretical Mean, echo=TRUE, fig.align='center', fig.width=10, fig.height=5}
 lambda <- 0.2
-n = 1000
+n = 40
+no_sims <- 1000
 
-hist(rexp(n, lambda))
+theoretical_mean = 1/lambda
 
-mns = NULL
-for (i in 1 : 1000) mns = c(mns, mean(rexp(40)))
-hist(mns)
+sample_data_means = apply(matrix(rexp(no_sims*n, rate = lambda), no_sims), 1, mean)
+hist(sample_data_means)
+
+abline(v = theoretical_mean, col = "red")
+
+
+theoretical_mean
+
+sample_mean <- mean(sample_data_means)
+sample_mean
 
 ```
 
 #### Sample Variance versus Theoretical Variance
 
 ```{r Sample Variance versus Theoretical Variance, echo=TRUE, fig.align='center', fig.width=10, fig.height=5}
-lambda <- 0.2
-n = 1000
 
-hist(rexp(n, lambda))
+theoretical_standard_deviation <- 1/lambda
 
+#Note: Variance = (SD)^2 / n
+theoretical_variance <- (theoretical_standard_deviation^2) / n
+
+sample_variance <- var(sample_data_means)
+
+theoretical_variance
+sample_variance
+
+```
+
+#### Normal Distribution Approximation
+
+```{r Normal Distribution Approximation, echo=TRUE, fig.align='center', fig.width=10, fig.height=5}
+
+hist(rexp(no_sims))
 mns = NULL
-for (i in 1 : 1000) mns = c(mns, mean(rexp(40)))
+for (i in 1 : 1000) mns = c(mns, mean(rexp(n)))
 hist(mns)
 
 ```
+
 
 #### Distribution
 
 ```{r Distribution, echo=TRUE, fig.align='center', fig.width=10, fig.height=5}
 
+summary(ToothGrowth)
+
 #plots
-p1 <- qplot(ToothGrowthDataFrame$len, 
-            ToothGrowthDataFrame$supp, 
+p1 <- qplot(ToothGrowth$len, 
+            ToothGrowth$supp, 
             colour=I("blue")) +
             xlab("Len") + 
             ylab("Supp") + 
             ggtitle("Len vs Supp")
 
-p2 <- qplot(ToothGrowthDataFrame$len, 
-            ToothGrowthDataFrame$dose, 
+p2 <- qplot(ToothGrowth$len, 
+            ToothGrowth$dose, 
             colour=I("blue")) +
             xlab("Len") + 
             ylab("Dose") + 
             ggtitle("Len vs Dose")
 
-p3 <- qplot(ToothGrowthDataFrame$supp, 
-            ToothGrowthDataFrame$dose, 
+p3 <- qplot(ToothGrowth$supp, 
+            ToothGrowth$dose, 
             colour=I("blue")) +
             xlab("Supp") + 
             ylab("Dose") + 
